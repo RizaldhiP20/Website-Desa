@@ -1,0 +1,1 @@
+- [x] Update the login method in AuthWargaController.php to match the provided logic: find penduduk by NIK, verify No KK via KartuKeluarga relation, handle login/session without auto-creating user, adjust validation and errors.

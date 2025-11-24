@@ -1,0 +1,251 @@
+Dokumentasi ini mencakup semua fitur yang diminta Pak Carik (Transparansi, Asoma, Layanan Mandiri, & Laporan).
+
+-----
+
+## 🌾 Rejosari App - Web Routes (Laravel + Blade + PostgreSQL)
+
+**Base URL:** `http://127.0.0.1:8000`
+
+**Authentication & Security:**
+
+  - Semua `POST`, `PUT`, `DELETE` wajib menyertakan `@csrf` token di dalam form.
+  - Prefix `/admin` memerlukan middleware `auth` & `role:admin`.
+  - Prefix `/warga` memerlukan middleware `auth` & `role:warga`.
+
+-----
+
+## 🔐 A. Autentikasi (Pintu Masuk)
+
+### 1\. GET Halaman Login Warga
+
+**Endpoint:** `GET /login`
+**Description:** Menampilkan form login khusus warga (menggunakan NIK & No KK).
+
+### 2\. POST Proses Login Warga
+
+**Endpoint:** `POST /login`
+**Description:** Memproses autentikasi warga.
+**Request Body (Form Data):**
+
+```json
+{
+  "nik": "3524012010850001",
+  "no_kk": "3524010000000001",  // Digunakan sebagai password/verifikasi
+  "_token": "csrf_token_string"
+}
+```
+
+### 3\. POST Proses Login Admin
+
+**Endpoint:** `POST /admin/login`
+**Description:** Memproses autentikasi perangkat desa/admin.
+**Request Body (Form Data):**
+
+```json
+{
+  "email": "admin@rejosari.desa.id",
+  "password": "password_rahasia",
+  "_token": "csrf_token_string"
+}
+```
+
+-----
+
+## 🏠 B. Portal Warga (Layanan Mandiri)
+
+### 4\. GET Dashboard Warga
+
+**Endpoint:** `GET /warga/dashboard`
+**Description:** Halaman utama warga setelah login (Menu shortcut layanan).
+
+### 5\. POST Kirim Pengajuan Surat
+
+**Endpoint:** `POST /warga/pengajuan`
+**Description:** Warga mengirim data permohonan surat baru ke admin.
+**Request Body (Form Data):**
+
+```json
+{
+  "surat_jenis_id": 3,  // ID Jenis Surat (misal: Ket. Usaha) dari dropdown
+  "keterangan": "Untuk persyaratan kredit KUR BRI",
+  "file_syarat": "(Binary File/Image KTP)", // Input type="file"
+  "_token": "csrf_token_string"
+}
+```
+
+-----
+
+## 📊 C. Admin - Master Data (Kependudukan)
+
+### 6\. POST Simpan Data Penduduk Baru
+
+**Endpoint:** `POST /admin/penduduk`
+**Description:** Menambah data jiwa baru (penduduk yang pindah masuk/pendataan awal).
+**Request Body (Form Data):**
+
+```json
+{
+  "nik": "352401...",
+  "nama_lengkap": "Budi Santoso",
+  "tempat_lahir": "Lamongan",
+  "tanggal_lahir": "1990-05-20",
+  "jenis_kelamin": "Laki-laki", // Enum: 'Laki-laki', 'Perempuan'
+  "agama": "Islam",
+  "pekerjaan": "Petani",
+  "status_kawin": "KAWIN",
+  "dusun_id": 1,                // ID Dusun (Gajah/Gapuk)
+  "kartu_keluarga_id": 15,      // ID KK (Jika ikut KK yg sudah ada)
+  "_token": "csrf_token_string"
+}
+```
+
+### 7\. POST Simpan Data Rumah (Asoma)
+
+**Endpoint:** `POST /admin/rumah`
+**Description:** Menambah data fisik rumah (Asoma) sesuai permintaan Pak Carik.
+**Request Body (Form Data):**
+
+```json
+{
+  "dusun_id": 2,                // ID Dusun (misal: Dusun Gapuk)
+  "kepala_rumah": "Bapak Hartono", // Nama penanggung jawab rumah
+  "rt": "001",
+  "rw": "002",
+  "alamat_detail": "Jl. Poros Desa No. 5",
+  "_token": "csrf_token_string"
+}
+```
+
+### 8\. POST Simpan Kartu Keluarga (KK)
+
+**Endpoint:** `POST /admin/kk`
+**Description:** Menambah Nomor KK baru yang menempati sebuah Rumah/Asoma.
+**Request Body (Form Data):**
+
+```json
+{
+  "nomor_kk": "3524010000000005",
+  "kepala_keluarga_id": 102,    // ID Penduduk yg jadi Kepala Keluarga
+  "rumah_id": 50,               // ID Rumah (Relasi ke Asoma)
+  "_token": "csrf_token_string"
+}
+```
+
+-----
+
+## 🔄 D. Admin - Peristiwa (Real-time Update)
+
+### 9\. POST Lapor Kelahiran
+
+**Endpoint:** `POST /admin/peristiwa/kelahiran`
+**Description:** Mencatat bayi lahir (Otomatis menambah data di tabel Penduduk).
+**Request Body (Form Data):**
+
+```json
+{
+  "nama_bayi": "Putri Ayu",
+  "tgl_lahir": "2025-11-22",
+  "jenis_kelamin": "Perempuan",
+  "kk_id": 15,                  // Masuk ke KK mana?
+  "nama_ayah": "Budi",          // Atau ID Penduduk Ayah
+  "nama_ibu": "Siti",           // Atau ID Penduduk Ibu
+  "jam_lahir": "08:30",
+  "keterangan": "Lahir di Bidan Desa",
+  "_token": "csrf_token_string"
+}
+```
+
+### 10\. POST Lapor Kematian
+
+**Endpoint:** `POST /admin/peristiwa/kematian`
+**Description:** Mencatat warga meninggal (Status penduduk berubah jadi 'Mati').
+**Request Body (Form Data):**
+
+```json
+{
+  "penduduk_id": 205,           // ID Warga yang meninggal (Select2)
+  "tgl_kematian": "2025-11-21",
+  "sebab": "Sakit Tua",
+  "tempat_kematian": "Rumah",
+  "pelapor_id": 206,            // ID Warga yang melapor (Ahli waris)
+  "_token": "csrf_token_string"
+}
+```
+
+### 11\. POST Lapor Mutasi (Pindah/Datang)
+
+**Endpoint:** `POST /admin/peristiwa/mutasi`
+**Description:** Mencatat warga yang pindah keluar desa atau datang dari luar.
+**Request Body (Form Data):**
+
+```json
+{
+  "jenis_mutasi": "keluar",     // Enum: 'masuk' atau 'keluar'
+  "penduduk_id": 300,           // Warga yang pindah (jika keluar)
+  "tgl_mutasi": "2025-11-20",
+  "alamat_asal": "Dusun Gajah",
+  "alamat_tujuan": "Surabaya",
+  "alasan": "Pekerjaan",
+  "_token": "csrf_token_string"
+}
+```
+
+-----
+
+## 📰 E. Admin - CMS (Wajah Desa & Berita)
+
+### 12\. PUT Update Profil Desa
+
+**Endpoint:** `PUT /admin/profil-desa`
+**Description:** Mengupdate teks Visi, Misi, dan Sejarah untuk halaman depan.
+**Request Body (Form Data):**
+
+```json
+{
+  "nama_desa": "Desa Rejosari",
+  "visi": "Terwujudnya Desa Rejosari yang Maju dan Mandiri...",
+  "misi": "<p>1. Meningkatkan pelayanan...</p>", // Summernote/Rich Text
+  "alamat_kantor": "Jl. Raya Deket...",
+  "foto_kades": "(Binary File)",
+  "_token": "csrf_token_string"
+}
+```
+
+### 13\. POST Publish Kegiatan/Berita
+
+**Endpoint:** `POST /admin/kegiatan`
+**Description:** Memposting berita kegiatan pembangunan/pemerintahan (Transparansi).
+**Request Body (Form Data):**
+
+```json
+{
+  "judul": "Perbaikan Jalan Dusun Gajah",
+  "kategori": "pembangunan",    // Options: pembangunan, pemerintahan, dll
+  "tanggal": "2025-11-25",
+  "konten": "<p>Kegiatan ini dilakukan secara gotong royong...</p>",
+  "foto_utama": "(Binary File)",
+  "status": "published",
+  "_token": "csrf_token_string"
+}
+```
+
+-----
+
+## 🖨️ F. Admin - Laporan (Reporting)
+
+### 14\. POST Cetak Laporan Demografi
+
+**Endpoint:** `POST /admin/laporan/cetak`
+**Description:** Menghasilkan file PDF/Excel laporan penduduk sesuai filter.
+**Request Body (Form Data):**
+
+```json
+{
+  "jenis_laporan": "demografi", // Options: demografi, mutasi, surat
+  "filter_dusun": 1,            // ID Dusun (Opsional, misal: Gajah)
+  "filter_usia": "balita",      // Options: balita, lansia, usia_sekolah
+  "tgl_awal": "2025-01-01",
+  "tgl_akhir": "2025-12-31",
+  "_token": "csrf_token_string"
+}
+```

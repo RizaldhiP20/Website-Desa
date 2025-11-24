@@ -1,0 +1,27 @@
+harus menjalankan "npm run dev" jika ingin menjalankan server
+
+Karena:
+Memangnya harus banget ya Laravel menggunakan npm run build?
+Dalam konteks Laravel, npm run build adalah perintah yang digunakan untuk menghasilkan file yang diperlukan untuk menjalankan aplikasi di server.
+Perintah Ini termasuk file index.html dan file lainnya yang dibutuhkan untuk memulai aplikasi. Perintah ini sangat penting untuk memastikan bahwa aplikasi Laravel dapat berjalan dengan lancar di server. 
+Namun, jika aplikasi Laravel hanya berjalan di lingkungan lokal, perintah ini tidak diperlukan. Dalam lingkungan lokal, aplikasi Laravel sudah terpasang dengan semua file yang diperlukan untuk berjalan. 
+sumber: eSparkBiz
+
+Jadi, jika aplikasi Laravel Anda hanya berjalan di lingkungan lokal, Anda tidak perlu menggunakan npm run build. 
+Namun, jika Anda ingin menguji aplikasi di server, Anda perlu menggunakan npm run build untuk menghasilkan file yang diperlukan.
+
+resources/views/
+├── landing.blade.php          ← Halaman publik (yang Anda tunjukkan)
+├── auth/
+│   └── login.blade.php        ← Halaman login (Laravel UI/Breeze)
+├── admin/
+│   ├── dashboard.blade.php    ← Dashboard admin (sudah ada)
+│   └── ... (CRUD lainnya)
+└── warga/
+    ├── dashboard.blade.php    ← Dashboard warga (baru)
+    └── layanan/
+        ├── index.blade.php
+        ├── create.blade.php
+        └── show.blade.php
+
+        
