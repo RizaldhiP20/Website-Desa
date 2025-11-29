@@ -23,7 +23,7 @@ class TablePendudukModel extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'penduduk';
+    protected $table = 'rejosari.penduduk';
     protected $connection = 'pgsql_rejosari';
     
     // Laravel Auth membutuhkan primary key. Defaultnya 'id'.
@@ -40,7 +40,7 @@ class TablePendudukModel extends Authenticatable
         'status_perkawinan',
         'agama',
         'pekerjaan',
-        'pendidikan',
+        'pendidikan_terakhir',
         'tempat_lahir',
         'no_identitas',
         'alamat',

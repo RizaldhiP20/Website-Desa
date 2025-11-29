@@ -35,7 +35,7 @@
                     <li class="nav-item"><a class="nav-link active" href="#page-top">Beranda</a></li>
                     <li class="nav-item"><a class="nav-link" href="#profil">Profil Desa</a></li>
                     <li class="nav-item"><a class="nav-link" href="#kegiatan">Kegiatan</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#statistik">Statistik</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('public.statistik') }}">Statistik</a></li>
                     <li class="nav-item"><a class="nav-link" href="#layanan">Layanan</a></li>
                     <li class="nav-item"><a class="nav-link" href="#lokasi">Lokasi</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>

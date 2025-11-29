@@ -126,81 +126,46 @@
             margin-bottom: 30px;
         }
 
-        .logo {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 20px;
-            background: white;
-            border-radius: 50%;
-            padding: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .logo-placeholder {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            color: #1e40af;
+        .logo-img {
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
         }
 
         h1 {
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 800; /* Bold */
             color: #1e293b;
             margin-bottom: 5px;
+            letter-spacing: 0.5px;
         }
 
         .subtitle {
-            font-size: 0.95rem;
-            color: #64748b;
-            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #6c757d; /* Grey */
+            margin-bottom: 2px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .district {
+            font-size: 0.85rem;
+            color: #adb5bd; /* Lighter Grey */
+            font-weight: 400;
         }
 
         /* Form Styles */
-        .form-group {
-            margin-bottom: 20px;
+        .form-floating > .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 8px;
         }
-
-        .input-group-custom {
-            position: relative;
+        
+        .form-floating > .form-control:focus {
+            border-color: #198754; /* Green Focus */
+            box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
         }
-
-        .input-label {
-            display: block;
-            background: #dc2626;
-            color: white;
-            padding: 10px 15px;
-            font-weight: 500;
-            font-size: 0.9rem;
-            border-radius: 8px 8px 0 0;
-            margin-bottom: 0;
-        }
-
-        .form-control-custom {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e5e7eb;
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        .form-control-custom:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        
+        .form-floating > label {
+            color: #6c757d;
         }
 
         /* Login Button */
@@ -278,10 +243,6 @@
             h1 {
                 font-size: 1.3rem;
             }
-
-            .subtitle {
-                font-size: 0.85rem;
-            }
         }
 
         /* Animation */
@@ -320,15 +281,10 @@
             <div class="login-card">
                 <!-- Logo and Header -->
                 <div class="logo-container">
-                    <div class="logo">
-                        <!-- Replace with actual logo -->
-                        <div class="logo-placeholder">
-                            <i class="bi bi-shield-check"></i>
-                        </div>
-                    </div>
+                    <img src="{{ asset('assets/images/logo-lamongan.png') }}" alt="Logo Lamongan" width="80" class="logo-img">
                     <h1>DESA REJOSARI</h1>
                     <p class="subtitle">KECAMATAN DEKET</p>
-                    <p class="subtitle"><strong>KABUPATEN LAMONGAN</strong></p>
+                    <p class="district">KABUPATEN LAMONGAN</p>
                 </div>
 
                 <!-- Error Alert -->
@@ -345,28 +301,25 @@
                 <!-- Login Form -->
                 <form action="{{ route('login.attempt') }}" method="POST" id="loginForm">
                     @csrf
-                    <div class="form-group">
-                        <div class="input-group-custom">
-                            <label class="input-label">No. Induk Kependudukan</label>
-                            <input type="text" class="form-control-custom" id="nik" name="nik" placeholder="Masukkan NIK Anda" required maxlength="16" value="{{ old('nik') }}">
-                        </div>
+                    
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="nik" name="nik" placeholder="NIK" required maxlength="16" value="{{ old('nik') }}">
+                        <label for="nik">No. Induk Kependudukan (NIK)</label>
                     </div>
 
-                    <div class="form-group">
-                        <div class="input-group-custom">
-                            <label class="input-label">No. Kartu Keluarga</label>
-                            <input type="text" class="form-control-custom" id="no_kk" name="no_kk" placeholder="Masukkan No. KK Anda" required maxlength="16">
-                        </div>
+                    <div class="form-floating mb-4">
+                        <input type="text" class="form-control" id="no_kk" name="no_kk" placeholder="No. KK" required maxlength="16">
+                        <label for="no_kk">No. Kartu Keluarga (KK)</label>
                     </div>
 
                     <button type="submit" class="btn-login">
-                        LOG IN
+                        MASUK
                     </button>
                 </form>
 
                 <!-- Footer -->
                 <div class="login-footer">
-                    <p class="mb-2">Belum terdaftar? <a href="#">Daftar Sekarang!</a></p>
+                    <p class="mb-2">Belum terdaftar? <a href="#">Hubungi Admin Desa</a></p>
                     <p class="mb-2 text-secondary">Login sebagai <a href="{{ route('login.admin') }}" class="text-secondary">Admin</a></p>
                     <a href="{{ route('landing') }}" class="back-link">
                         <i class="bi bi-arrow-left"></i> Kembali ke beranda

@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use App\Models\TablePendudukModel as Penduduk;
 use App\Models\TableKartuKeluargaModel as KK;
 use App\Models\TableSuratPermohonanModel as SuratPermohonan;
+use App\Models\TableDusunModel as Dusun;
+use App\Models\TableRumahModel as Rumah;
 
 class DashboardController extends Controller
 {
@@ -42,6 +44,12 @@ class DashboardController extends Controller
                                             ->take(5)
                                             ->get();
 
+        // 7. Total Dusun
+        $total_dusun = Dusun::count();
+
+        // 8. Total Rumah (Asoma)
+        $total_rumah = Rumah::count();
+
         // Return view with data
         return view('admin.dashboard', compact(
             'total_penduduk',
@@ -49,7 +57,10 @@ class DashboardController extends Controller
             'surat_pending',
             'surat_selesai',
             'kelahiran_bulan_ini',
-            'recent_surat'
+            'kelahiran_bulan_ini',
+            'recent_surat',
+            'total_dusun',
+            'total_rumah'
         ));
     }
 }

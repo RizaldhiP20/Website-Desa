@@ -14,36 +14,6 @@ use App\Http\Controllers\Warga\LayananWargaController as WargaLayananController;
 use App\Http\Controllers\Warga\DashboardController as WargaDashboardController;
 use App\Http\Controllers\Auth\LoginController;
 
-// TEST ROUTE - Hapus setelah testing berhasil
-Route::get('/test', function () {
-    return "It's works! Route testing berhasil.";
-})->name('test');
-
-// DEBUG ROUTE - Cek Role User
-Route::get('/debug-role', function () {
-    $user = Auth::user();
-    if (!$user) {
-        return "User belum login.";
-    }
-
-    // Load relasi role secara eksplisit
-    $user->load('role');
-    
-    dd([
-        'User Data' => $user->toArray(),
-        'Role Relation' => $user->role,
-        'Role ID' => $user->role_id
-    ]);
-});
-
-// DEBUG ROUTE - Cek Model Class
-Route::get('/cek-model', function () {
-    $user = Auth::user();
-    if (!$user) {
-        return "User belum login.";
-    }
-    return get_class($user);
-});
 
 // Rute untuk Halaman Publik (Landing Page)
 Route::get('/', function () {
@@ -53,6 +23,9 @@ Route::get('/', function () {
     // Mengarahkan ke view landing page dengan data profil desa
     return view('dashboard', ['desaProfile' => $desaProfile]);
 })->name('landing');
+
+// Rute Statistik Publik
+Route::get('/statistik', [App\Http\Controllers\PublicController::class, 'statistik'])->name('public.statistik');
 
 //=================================================================
 // RUTE UNTUK ADMIN
@@ -152,8 +125,8 @@ Route::middleware(['auth:admin', 'role:admin'])->prefix('admin')->name('admin.')
 //=================================================================
 
 // 1. Admin Authentication
-Route::get('/admin/login', [LoginController::class, 'showAdminLoginForm'])->name('admin.login');
-Route::post('/admin/login', [LoginController::class, 'loginAdmin'])->name('admin.login.post');
+Route::get('/admin/login', [LoginController::class, 'showAdminLoginForm'])->middleware('admin.throttle')->name('admin.login');
+Route::post('/admin/login', [LoginController::class, 'loginAdmin'])->middleware('admin.throttle')->name('admin.login.post');
 
 // 2. Warga Authentication
 Route::get('/login', [LoginController::class, 'showWargaLoginForm'])->name('login');
@@ -166,6 +139,9 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/login/admin', function () {
     return redirect()->route('admin.login');
 })->name('login.admin');
+
+// Blocked Page
+Route::get('/blocked', [LoginController::class, 'showBlockedPage'])->name('blocked');
 
 //=================================================================
 // RUTE UNTUK WARGA
